@@ -1,0 +1,58 @@
+{
+  "service": "JustSupport",
+  "frameworkVersion": ">=1.6.0 <2.0.0",
+  "provider": {
+    "name": "aws",
+    "runtime": "nodejs6.10",
+    "memorySize": 128,
+    "timeout": 120,
+    "region": "${file(config.json):awsRegion}",
+    "accountId": "${file(config.json):awsAccountId}",
+    "deploymentBucket": "xxxxxxx",
+    "vpc": {
+      "securityGroupIds": [
+        "sg-xxxxxxx"
+      ],
+      "subnetIds": [
+        "subnet-xxxxxxx",
+        "subnet-xxxxxxx",
+        "subnet-xxxxxxx"
+      ]
+    },
+    "versionFunctions": false
+  },
+  "package": {
+    "exclude": [
+      "node_modules/serverless/**",
+      ".git"
+    ]
+  },
+  "functions": {
+    "JustSupportDynamoHandler": {
+      "handler": "SupportCasesSync.DynamoHandler",
+      "description": "This function updates Dynamo tables with AWS cases info.",
+      "events": [
+        {
+          "schedule": {
+            "rate": "rate(5 minutes)",
+            "enabled": true
+          }
+        }
+      ],
+      "name": "JustSupport-DynamoHandler"
+    },
+    "JustSupportHandler": {
+      "handler": "SupportCasesSync.JiraHandler",
+      "description": "This function updates Jira with AWS cases info.",
+      "events": [
+        {
+          "sns": "${file(config.json):snsTopicName}"
+        }
+      ],
+      "name": "JustSupport-JiraHandler"
+    }
+  },
+  "resources": {
+    "Resources": "${file(cloudformation.resources.json)}"
+  }
+}

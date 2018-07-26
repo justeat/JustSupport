@@ -1,0 +1,116 @@
+{
+  "IamRoleLambdaExecution": {
+    "Properties": {
+      "Path": "/lambda_roles/",
+      "Policies": [
+        {
+          "PolicyName": "defaultRolePolicy",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "logs:*"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:*"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sns:*"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "DynamoDB:*"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sts:AssumeRole"
+                ],
+                "Resource": "*"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "JustSupportDynamoHandlerLogGroup": {
+    "Type": "AWS::Logs::LogGroup",
+    "Properties": {
+      "RetentionInDays": 30
+    }
+  },
+  "JustSupportHandlerLogGroup": {
+    "Type": "AWS::Logs::LogGroup",
+    "Properties": {
+      "RetentionInDays": 30
+    }
+  },
+  "DynamoDbTable": {
+    "Type": "AWS::DynamoDB::Table",
+    "Properties": {
+      "TableName": "${file(config.json):dynamoTableName}",
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "JiraUpdated-timeCreated-index",
+          "KeySchema": [
+            {
+              "AttributeName": "JiraUpdated",
+              "KeyType": "HASH"
+            },
+            {
+              "AttributeName": "timeCreated",
+              "KeyType": "RANGE"
+            }
+          ],
+          "Projection": {
+            "ProjectionType": "ALL"
+          },
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": 15,
+            "WriteCapacityUnits": 15
+          }
+        }
+      ],
+      "KeySchema": [
+        {
+          "AttributeName": "CommunicationId",
+          "KeyType": "HASH"
+        }
+      ],
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 15,
+        "WriteCapacityUnits": 15
+      },
+      "AttributeDefinitions": [
+        {
+          "AttributeName": "CommunicationId",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "timeCreated",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "JiraUpdated",
+          "AttributeType": "N"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "awsRegion":"xx-xxxx-x",
+    "awsAccountId": "xxxxxxxxxxxx",
+    "dynamoTableName": "aws_support_cases_communications",
+    "snsTopicName":"getCommunicationsReady",
+    "daysToScan":120,
+    "iamRolePath":"lambda_roles/[*role_name*]",
+    "awsIamAccountArns":[
+        {"name":"XXX","arn":"arn:aws:iam::[*account_ID*]:role/@{iamRolePath}"},
+        {"name":"XXX","arn":"arn:aws:iam::[*account_ID*]:role/@{iamRolePath}"}
+    ],
+    "jiraApiHost":"https://xxx.xxx.xxx.xxx/rest/api/2",
+    "jiraAwsFieldName1":{"name": "xxxxx", "id":"customfield_xxx"},
+    "jiraAwsFieldName2":{"name": "xxxxx", "id":"customfield_xxx"},
+    "jiraApiKey":"xxxxxxx"
+}

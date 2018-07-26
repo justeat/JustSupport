@@ -1,0 +1,57 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Creates IAM Roles required by JustSupport feature",
+  "Parameters": {
+    "TargetVersion": {
+      "Type": "String",
+      "Description": "A placeholder to be populated by the pipeline step CloudFormationDeploy",
+      "Default": "Not Specified"
+    },
+    "PipelineJobId": {
+      "Type": "String",
+      "Description": "A placeholder to be populated by the pipeline step CloudFormationDeploy",
+      "Default": "0"
+    },
+    "EnvironmentName": {
+      "Type": "String"
+    }
+  },
+  "Outputs": {
+    "TargetVersion": {
+      "Description": "A placeholder to be populated by the pipeline step CloudFormationDeploy",
+      "Value": {
+        "Ref": "TargetVersion"
+      }
+    },
+    "PipelineJobId": {
+      "Description": "A placeholder to be populated by the pipeline step CloudFormationDeploy",
+      "Value": {
+        "Ref": "PipelineJobId"
+      }
+    }
+  },
+  "Resources": {
+    "JustSupportSupportAccess": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "JustSupportSupportAccess",
+        "Path": "/lambda_roles/",
+        "ManagedPolicyArns":["arn:aws:iam::aws:policy/AWSSupportAccess"],
+        "AssumeRolePolicyDocument": {
+          "Statement": [{
+            "Effect": "Allow",
+            "Action": [
+              "sts:AssumeRole"
+            ],
+            "Principal": {
+              "AWS": [
+                "arn:aws:sts::xxxxxxxxxxxx:assumed-role/JustSupport-xxxxxxx-xx-xxxxx-1-lambdaRole/JustSupport-DynamoHandler",
+                "arn:aws:sts::xxxxxxxxxxxx:assumed-role/JustSupport-xxxxxxx-xx-xxxxx-1-lambdaRole/JustSupport-JiraHandler"
+              ]
+            }
+          }]
+        }
+      }
+    }
+  }
+}
