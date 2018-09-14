@@ -175,8 +175,15 @@ function findJiras(communicationsArr, displayId, callback) {
             return;
         }
 
+        // Evaluate response status code before parsing response body
+        // (Jira returns HTML for HTTP 401, regardless of request Content-Type, upon which JSON.parse() fails)
+        if (response.statusCode != 200) {
+            console.log(`Unable to find Jira IDs: Jira responded with HTTP ${response.statusCode}.`);
+            return;
+        }
+
         let jsonResponse = JSON.parse(body);
-        if (response.statusCode == 200 && jsonResponse.total != 0) {
+        if (jsonResponse.total != 0) {
             jsonResponse.issues.forEach(function (issue) {
                 //verifying if this was second custom field reference (needed later for colorizing)
                 callback(communicationsArr, issue, (issue.fields[config.jiraAwsFieldName2.id] == displayId));
